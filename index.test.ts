@@ -217,7 +217,7 @@ it('has keys option', async () => {
 
   // updates on init
   await act(async () => {
-    mapSore.notify(undefined as unknown as keyof MapStore)
+    mapSore.set({ a: undefined, b: undefined })
     await delay(1)
   })
 
