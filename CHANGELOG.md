@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.1.3
+* Fixed component rendering after unmount (by David Mzareulyan).
+
 ## 0.1.2
 * Fixed `useStore` types.
 
