@@ -14,20 +14,24 @@ export function useStore(store, opts = {}) {
   }
 
   useEffect(() => {
-    let batching
+    let batching, timer, unlisten
     let rerender = () => {
       if (!batching) {
         batching = 1
-        setTimeout(() => {
+        timer = setTimeout(() => {
           batching = undefined
           forceRender({})
         })
       }
     }
     if (opts.keys) {
-      return listenKeys(store, opts.keys, rerender)
+      unlisten = listenKeys(store, opts.keys, rerender)
     } else {
-      return store.listen(rerender)
+      unlisten = store.listen(rerender)
+    }
+    return () => {
+      unlisten()
+      clearTimeout(timer)
     }
   }, [store, '' + opts.keys])
 
