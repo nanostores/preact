@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom/extend-expect'
+import './setup.js'
 import {
   STORE_UNMOUNT_DELAY,
   mapTemplate,
@@ -7,13 +7,13 @@ import {
   map
 } from 'nanostores'
 import { h, FunctionalComponent as FC } from 'preact'
-import PreactTesting from '@testing-library/preact'
+import { render, screen, act } from '@testing-library/preact'
+import { equal, is } from 'uvu/assert'
 import { useState } from 'preact/hooks'
 import { delay } from 'nanodelay'
+import { test } from 'uvu'
 
-import { useStore } from './index.js'
-
-let { render, screen, act } = PreactTesting
+import { useStore } from '../index.js'
 
 function getCatcher(cb: () => void): [string[], FC] {
   let errors: string[] = []
@@ -28,24 +28,29 @@ function getCatcher(cb: () => void): [string[], FC] {
   return [errors, Catcher]
 }
 
-it('throws on template instead of store', () => {
+test.after.each(() => {
+  window.document.head.innerHTML = ''
+  window.document.body.innerHTML = '<main></main>'
+})
+
+test('throws on template instead of store', () => {
   let Test = (): void => {}
   let [errors, Catcher] = getCatcher(() => {
     // @ts-expect-error
     useStore(Test, 'ID')
   })
   render(h(Catcher, null))
-  expect(errors).toEqual([
+  equal(errors, [
     'Use useStore(Template(id)) or useSync() ' +
       'from @logux/client/preact for templates'
   ])
 })
 
-it('renders simple store', async () => {
+test('renders simple store', async () => {
   let events: string[] = []
   let renders = 0
 
-  let letter = atom<string>()
+  let letter = atom<string>('')
 
   onMount(letter, () => {
     events.push('constructor')
@@ -82,10 +87,10 @@ it('renders simple store', async () => {
   }
 
   render(h(Wrapper, null))
-  expect(events).toEqual(['constructor'])
-  expect(screen.getByTestId('test1')).toHaveTextContent('a')
-  expect(screen.getByTestId('test2')).toHaveTextContent('a')
-  expect(renders).toBe(1)
+  equal(events, ['constructor'])
+  equal(screen.getByTestId('test1').textContent, 'a')
+  equal(screen.getByTestId('test2').textContent, 'a')
+  equal(renders, 1)
 
   await act(async () => {
     letter.set('b')
@@ -93,23 +98,23 @@ it('renders simple store', async () => {
     await delay(1)
   })
 
-  expect(screen.getByTestId('test1')).toHaveTextContent('c')
-  expect(screen.getByTestId('test2')).toHaveTextContent('c')
-  expect(renders).toBe(2)
+  equal(screen.getByTestId('test1').textContent, 'c')
+  equal(screen.getByTestId('test2').textContent, 'c')
+  equal(renders, 2)
 
   act(() => {
     screen.getByRole('button').click()
   })
-  expect(screen.queryByTestId('test')).not.toBeInTheDocument()
-  expect(renders).toBe(2)
+  is(screen.queryByTestId('test'), null)
+  equal(renders, 2)
   await delay(STORE_UNMOUNT_DELAY)
 
-  expect(events).toEqual(['constructor', 'destroy'])
+  equal(events, ['constructor', 'destroy'])
 })
 
-it('does not reload store on component changes', async () => {
+test('does not reload store on component changes', async () => {
   let destroyed = ''
-  let simple = atom<string>()
+  let simple = atom<string>('')
 
   onMount(simple, () => {
     simple.set('S')
@@ -166,25 +171,25 @@ it('does not reload store on component changes', async () => {
   }
 
   render(h(Switcher, null))
-  expect(screen.getByTestId('test')).toHaveTextContent('1 S M')
+  equal(screen.getByTestId('test').textContent, '1 S M')
 
   act(() => {
     screen.getByRole('button').click()
   })
-  expect(screen.getByTestId('test')).toHaveTextContent('2 S M')
-  expect(destroyed).toBe('')
+  equal(screen.getByTestId('test').textContent, '2 S M')
+  equal(destroyed, '')
 
   act(() => {
     screen.getByRole('button').click()
   })
-  expect(screen.queryByTestId('test')).not.toBeInTheDocument()
-  expect(destroyed).toBe('')
+  is(screen.queryByTestId('test'), null)
+  equal(destroyed, '')
 
   await delay(STORE_UNMOUNT_DELAY)
-  expect(destroyed).toBe('SM')
+  equal(destroyed, 'SM')
 })
 
-it('has keys option', async () => {
+test('has keys option', async () => {
   type MapStore = {
     a?: string
     b?: string
@@ -210,10 +215,8 @@ it('has keys option', async () => {
 
   render(h(Wrapper, {}, h(MapTest, {})))
 
-  expect(screen.getByTestId('map-test')).toHaveTextContent(
-    'map:undefined-undefined'
-  )
-  expect(renderCount).toBe(1)
+  equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
+  equal(renderCount, 1)
 
   // updates on init
   await act(async () => {
@@ -221,10 +224,8 @@ it('has keys option', async () => {
     await delay(1)
   })
 
-  expect(screen.getByTestId('map-test')).toHaveTextContent(
-    'map:undefined-undefined'
-  )
-  expect(renderCount).toBe(2)
+  equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
+  equal(renderCount, 2)
 
   // updates when has key
   await act(async () => {
@@ -232,8 +233,8 @@ it('has keys option', async () => {
     await delay(1)
   })
 
-  expect(screen.getByTestId('map-test')).toHaveTextContent('map:a-undefined')
-  expect(renderCount).toBe(3)
+  equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
+  equal(renderCount, 3)
 
   // does not update when has no key
   await act(async () => {
@@ -241,8 +242,8 @@ it('has keys option', async () => {
     await delay(1)
   })
 
-  expect(screen.getByTestId('map-test')).toHaveTextContent('map:a-undefined')
-  expect(renderCount).toBe(3)
+  equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
+  equal(renderCount, 3)
 
   // reacts on parameter changes
   await act(async () => {
@@ -250,6 +251,8 @@ it('has keys option', async () => {
     await delay(1)
   })
 
-  expect(screen.getByTestId('map-test')).toHaveTextContent('map:a-b')
-  expect(renderCount).toBe(4)
+  equal(screen.getByTestId('map-test').textContent, 'map:a-b')
+  equal(renderCount, 4)
 })
+
+test.run()
