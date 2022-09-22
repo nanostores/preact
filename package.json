@@ -14,7 +14,7 @@
   },
   "author": "Andrey Sitnik <andrey@sitnik.ru>",
   "license": "MIT",
-  "repository": "nanostores/react",
+  "repository": "nanostores/preact",
   "sideEffects": false,
   "type": "module",
   "types": "./index.d.ts",

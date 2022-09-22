@@ -13,7 +13,7 @@ export interface UseStoreOptions<
  * Can be user with store builder too.
  *
  * ```js
- * import { useStore } from 'nanostores/react'
+ * import { useStore } from 'nanostores/preact'
  *
  * import { router } from '../store/router'
  *
@@ -45,7 +45,7 @@ export function useStore<
  * with fix for React Native.
  *
  * ```js
- * import { batch } from 'nanostores/react'
+ * import { batch } from 'nanostores/preact'
  *
  * React.useEffect(() => {
  *   let unbind = store.listen(() => {
