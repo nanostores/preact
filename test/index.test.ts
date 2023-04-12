@@ -63,11 +63,13 @@ test('renders simple store', async () => {
   let Test1: FC = () => {
     renders += 1
     let value = useStore(letter)
+    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test1' }, value)
   }
 
   let Test2: FC = () => {
     let value = useStore(letter)
+    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test2' }, value)
   }
 
@@ -132,12 +134,14 @@ test('does not reload store on component changes', async () => {
   let TestA: FC = () => {
     let simpleValue = useStore(simple)
     let { id } = useStore(Map('M'))
+    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `1 ${simpleValue} ${id}`)
   }
 
   let TestB: FC = () => {
     let simpleValue = useStore(simple)
     let { id } = useStore(Map('M'))
+    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `2 ${simpleValue} ${id}`)
   }
 
@@ -202,6 +206,7 @@ test('has keys option', async () => {
     let [keys, setKeys] = useState<(keyof MapStore)[]>(['a'])
     let { a, b } = useStore(mapSore, { keys })
     return h(
+      // @ts-expect-error: Preact type issue with data-*
       'div',
       { 'data-testid': 'map-test' },
       h('button', {
