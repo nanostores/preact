@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4
+* Moved to Nano Stores 0.8.
+
 ## 0.3.1
 * Fixed docs (by Zharzhan Kulmyrza).
 
