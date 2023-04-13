@@ -18,11 +18,9 @@ with many atomic tree-shakable stores.
 import { useStore } from '@nanostores/preact'
 
 import { profile } from '../stores/profile.js'
-import { User } from '../stores/user.js'
 
 export const Header = () => {
   const { userId } = useStore(profile)
-  const currentUser = useStore(User(userId))
   return <header>{currentUser.name}</header>
 }
 ```

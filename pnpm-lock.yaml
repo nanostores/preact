@@ -62,8 +62,8 @@ devDependencies:
     specifier: ^2.0.2
     version: 2.0.2
   nanostores:
-    specifier: ^0.7.4
-    version: 0.7.4
+    specifier: ^0.8.0
+    version: 0.8.0
   preact:
     specifier: ^10.13.2
     version: 10.13.2
@@ -1055,7 +1055,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001478
-      electron-to-chromium: 1.4.360
+      electron-to-chromium: 1.4.361
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10(browserslist@4.21.5)
     dev: true
@@ -1340,16 +1340,16 @@ packages:
       webidl-conversions: 7.0.0
     dev: true
 
-  /electron-to-chromium@1.4.360:
-    resolution: {integrity: sha512-EP/jdF15S+l3iSSzgUpUqeazvkbVFXNuVxwwLMVUSie3lUeH1HH70gKe0IS7TASB/0h5QPG2bLMzv2jelSztIQ==}
+  /electron-to-chromium@1.4.361:
+    resolution: {integrity: sha512-VocVwjPp05HUXzf3xmL0boRn5b0iyqC7amtDww84Jb1QJNPBc7F69gJyEeXRoriLBC4a5pSyckdllrXAg4mmRA==}
     dev: true
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
     dev: true
 
-  /entities@4.4.0:
-    resolution: {integrity: sha512-oYp7156SP8LkeGD0GF85ad1X9Ai79WtRsZ2gxJqtBuzH+98YUV6jkHEKlZkMbcrjJjIVJNIDP/3WL9wQkoPbWA==}
+  /entities@4.5.0:
+    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
     dev: true
 
@@ -2706,9 +2706,9 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /nanostores@0.7.4:
-    resolution: {integrity: sha512-MBeUVt7NBcXqh7AGT+KSr3O0X/995CZsvcP2QEMP+PXFwb07qv3Vjyq+EX0yS8f12Vv3Tn2g/BvK/OZoMhJlOQ==}
-    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+  /nanostores@0.8.0:
+    resolution: {integrity: sha512-Xgs3qwYhNYXyglDe41JEtACDvFZELFRofDBqBuJ02JG1mrwXWneQTsk89GHvW0bgLPcWXOz4GRm4enwgjnD8FQ==}
+    engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
 
   /natural-compare-lite@1.4.0:
@@ -2822,7 +2822,7 @@ packages:
   /parse5@7.1.2:
     resolution: {integrity: sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==}
     dependencies:
-      entities: 4.4.0
+      entities: 4.5.0
     dev: true
 
   /path-exists@4.0.0:
