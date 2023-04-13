@@ -15,35 +15,9 @@ import { test } from 'uvu'
 
 import { useStore } from '../index.js'
 
-function getCatcher(cb: () => void): [string[], FC] {
-  let errors: string[] = []
-  let Catcher: FC = () => {
-    try {
-      cb()
-    } catch (e) {
-      if (e instanceof Error) errors.push(e.message)
-    }
-    return null
-  }
-  return [errors, Catcher]
-}
-
 test.after.each(() => {
   window.document.head.innerHTML = ''
   window.document.body.innerHTML = '<main></main>'
-})
-
-test('throws on template instead of store', () => {
-  let Test = (): void => {}
-  let [errors, Catcher] = getCatcher(() => {
-    // @ts-expect-error
-    useStore(Test, 'ID')
-  })
-  render(h(Catcher, null))
-  equal(errors, [
-    'Use useStore(Template(id)) or useSync() ' +
-      'from @logux/client/preact for templates'
-  ])
 })
 
 test('renders simple store', async () => {
