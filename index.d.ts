@@ -1,10 +1,14 @@
-import { MapStore, Store, StoreValue } from 'nanostores'
+import { Store, StoreValue } from 'nanostores'
 
-export interface UseStoreOptions<
-  SomeStore,
-  Key extends string | number | symbol
-> {
-  keys?: SomeStore extends MapStore ? Key[] : never
+type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
+  ? K
+  : never
+
+export interface UseStoreOptions<SomeStore> {
+  /**
+   * Will re-render components only on specific key changes.
+   */
+  keys?: StoreKeys<SomeStore>[]
 }
 
 /**
@@ -30,15 +34,10 @@ export interface UseStoreOptions<
  * @param store Store instance.
  * @returns Store value.
  */
-export function useStore<
-  SomeStore extends Store,
-  Key extends keyof StoreValue<SomeStore>
->(
+export function useStore<SomeStore extends Store>(
   store: SomeStore,
-  options?: UseStoreOptions<SomeStore, Key>
-): SomeStore extends MapStore
-  ? Pick<StoreValue<SomeStore>, Key>
-  : StoreValue<SomeStore>
+  options?: UseStoreOptions<SomeStore>
+): StoreValue<SomeStore>
 
 /**
  * Batch React updates. It is just wrap for React’s `unstable_batchedUpdates`
