@@ -220,4 +220,42 @@ test('has keys option', async () => {
   equal(renderCount, 4)
 })
 
+test('return correct value for Atom, if store was changed between rendering and useEffect', async () => {
+  let store = atom<'old' | 'new'>('old')
+
+  let renderWithMutate = (value: string): string => {
+    store.get() !== 'new' && store.set('new')
+    return value
+  }
+
+  let Wrapper: FC = () => {
+    let value = useStore(store)
+    return h('p', {}, renderWithMutate(value))
+  }
+
+  render(h(Wrapper, null))
+
+  let result = screen.getByText('new').textContent
+  equal(result, 'new')
+})
+
+test('return correct value for MapStore, if store was changed between rendering and useEffect', async () => {
+  let store = map<{ value: 'old' | 'new' }>({ value: 'old' })
+
+  let renderWithMutate = (value: string): string => {
+    store.get().value !== 'new' && store.setKey('value', 'new')
+    return value
+  }
+
+  let Wrapper: FC = () => {
+    let value = useStore(store).value
+    return h('p', {}, renderWithMutate(value))
+  }
+
+  render(h(Wrapper, null))
+
+  let result = screen.getByText('new').textContent
+  equal(result, 'new')
+})
+
 test.run()
