@@ -3,7 +3,12 @@ import { listenKeys } from 'nanostores'
 
 export function useStore(store, opts = {}) {
   let [, forceRender] = useState({})
+  let [valueBeforeEffect] = useState(store.get())
 
+  useEffect(() => {
+    valueBeforeEffect !== store.get() && forceRender({})
+  }, [])
+  
   useEffect(() => {
     let batching, timer, unlisten
     let rerender = () => {
