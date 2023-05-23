@@ -258,4 +258,33 @@ test('return correct value for MapStore, if store was changed between rendering 
   equal(result, 'new')
 })
 
+test('does not re-render when store value has not changed', async () => {
+  let renders = 0
+
+  let letter = atom<string>('a')
+
+  onMount(letter, () => {
+    letter.set('a')
+  })
+
+  let Test1: FC = () => {
+    renders += 1
+    let value = useStore(letter)
+    // @ts-expect-error: Preact type issue with data-*
+    return h('div', { 'data-testid': 'test1' }, value)
+  }
+
+  render(h(Test1, null))
+  equal(screen.getByTestId('test1').textContent, 'a')
+  equal(renders, 1)
+
+  await act(async () => {
+    letter.set('a') // Set the same value again
+    await delay(1)
+  })
+
+  equal(screen.getByTestId('test1').textContent, 'a')
+  equal(renders, 1) // No additional re-render occurred
+})
+
 test.run()

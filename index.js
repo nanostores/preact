@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'preact/hooks'
+import { useState, useEffect, useMemo } from 'preact/hooks'
 import { listenKeys } from 'nanostores'
 
 export function useStore(store, opts = {}) {
   let [, forceRender] = useState({})
-  let [valueBeforeEffect] = useState(store.get())
+  let [valueBeforeEffect, setValueBeforeEffect] = useState(store.get())
 
   useEffect(() => {
-    valueBeforeEffect !== store.get() && forceRender({})
+    setValueBeforeEffect(store.get())
   }, [])
-  
+
   useEffect(() => {
     let batching, timer, unlisten
     let rerender = () => {
@@ -31,5 +31,5 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  return store.get()
+  return useMemo(() => store.get(), [store, valueBeforeEffect])
 }
