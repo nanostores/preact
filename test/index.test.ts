@@ -1,11 +1,13 @@
+import type { FunctionalComponent as FC } from 'preact'
+
 import './setup.js'
 import { STORE_UNMOUNT_DELAY, onMount, atom, map } from 'nanostores'
-import { h, FunctionalComponent as FC } from 'preact'
 import { render, screen, act } from '@testing-library/preact'
 import { equal, is } from 'uvu/assert'
 import { useState } from 'preact/hooks'
 import { delay } from 'nanodelay'
 import { test } from 'uvu'
+import { h } from 'preact'
 
 import { useStore } from '../index.js'
 
