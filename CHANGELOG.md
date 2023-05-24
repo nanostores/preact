@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5
+* Moved to Nano Stores 0.9.
+
 ## 0.4.1
 * Fixed store updating between render and effect (Alex Jet).
 
