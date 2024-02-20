@@ -3,15 +3,15 @@ import type { FunctionalComponent as FC } from 'preact'
 import './setup.js'
 import { STORE_UNMOUNT_DELAY, onMount, atom, map } from 'nanostores'
 import { render, screen, act } from '@testing-library/preact'
-import { equal, is } from 'uvu/assert'
+import { deepStrictEqual, equal } from 'node:assert'
 import { useState } from 'preact/hooks'
 import { delay } from 'nanodelay'
-import { test } from 'uvu'
+import { test, afterEach } from 'node:test'
 import { h } from 'preact'
 
 import { useStore } from '../index.js'
 
-test.after.each(() => {
+afterEach(() => {
   window.document.head.innerHTML = ''
   window.document.body.innerHTML = '<main></main>'
 })
@@ -59,7 +59,7 @@ test('renders simple store', async () => {
   }
 
   render(h(Wrapper, null))
-  equal(events, ['constructor'])
+  deepStrictEqual(events, ['constructor'])
   equal(screen.getByTestId('test1').textContent, 'a')
   equal(screen.getByTestId('test2').textContent, 'a')
   equal(renders, 1)
@@ -77,11 +77,11 @@ test('renders simple store', async () => {
   act(() => {
     screen.getByRole('button').click()
   })
-  is(screen.queryByTestId('test'), null)
+  equal(screen.queryByTestId('test'), null)
   equal(renders, 2)
   await delay(STORE_UNMOUNT_DELAY)
 
-  equal(events, ['constructor', 'destroy'])
+  deepStrictEqual(events, ['constructor', 'destroy'])
 })
 
 test('does not reload store on component changes', async () => {
@@ -148,7 +148,7 @@ test('does not reload store on component changes', async () => {
   act(() => {
     screen.getByRole('button').click()
   })
-  is(screen.queryByTestId('test'), null)
+  equal(screen.queryByTestId('test'), null)
   equal(destroyed, '')
 
   await delay(STORE_UNMOUNT_DELAY)

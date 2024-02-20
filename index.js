@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'preact/hooks'
 import { listenKeys } from 'nanostores'
+import { useEffect, useState } from 'preact/hooks'
 
 export function useStore(store, opts = {}) {
   let [, forceRender] = useState({})
