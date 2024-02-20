@@ -259,5 +259,3 @@ test('return correct value for MapStore, if store was changed between rendering 
   let result = screen.getByText('new').textContent
   equal(result, 'new')
 })
-
-test.run()
