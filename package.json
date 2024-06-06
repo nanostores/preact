@@ -20,10 +20,14 @@
   "repository": "nanostores/preact",
   "sideEffects": false,
   "type": "module",
-  "types": "./index.d.ts",
+  "types": "./src/index.d.ts",
   "exports": {
-    ".": "./index.js",
-    "./package.json": "./package.json"
+    ".": "./src/index.js",
+    "./package.json": "./package.json",
+    "./signals": {
+      "import": "./src/signals/index.js",
+      "types": "./src/signals/index.d.ts"
+    }
   },
   "engines": {
     "node": "^18.0.0 || >=20.0.0"
@@ -36,7 +40,8 @@
   ],
   "peerDependencies": {
     "nanostores": "^0.9.0 || ^0.10.0",
-    "preact": ">=10.0.0"
+    "preact": ">=10.0.0",
+    "@preact/signals": ">=1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -63,6 +68,7 @@
     "nanodelay": "^2.0.2",
     "nanostores": "^0.10.0",
     "preact": "^10.19.5",
+    "@preact/signals": "^1.2.3",
     "size-limit": "^11.0.2",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
@@ -102,10 +108,11 @@
   "size-limit": [
     {
       "import": {
-        "index.js": "{ useStore }",
+        "src/index.js": "{ useStore }",
+        "src/signals/index.js": "{ useStoreSignal }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "957 B"
+      "limit": "999 B"
     }
   ]
 }

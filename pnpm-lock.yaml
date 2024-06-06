@@ -11,6 +11,9 @@ devDependencies:
   '@logux/eslint-config':
     specifier: ^52.0.2
     version: 52.0.2(eslint-config-standard@17.1.0)(eslint-plugin-import@2.29.1)(eslint-plugin-n@16.6.2)(eslint-plugin-node-import@1.0.4)(eslint-plugin-perfectionist@2.5.0)(eslint-plugin-prefer-let@3.0.1)(eslint-plugin-promise@6.1.1)(eslint@8.56.0)
+  '@preact/signals':
+    specifier: ^1.2.3
+    version: 1.2.3(preact@10.19.5)
   '@size-limit/preset-small-lib':
     specifier: ^11.0.2
     version: 11.0.2(size-limit@11.0.2)
@@ -645,6 +648,19 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+    dev: true
+
+  /@preact/signals-core@1.6.0:
+    resolution: {integrity: sha512-O/XGxwP85h1F7+ouqTMOIZ3+V1whfaV9ToIVcuyGriD4JkSD00cQo54BKdqjvBJxbenvp7ynfqRHEwI6e+NIhw==}
+    dev: true
+
+  /@preact/signals@1.2.3(preact@10.19.5):
+    resolution: {integrity: sha512-M2DXse3Wi8HwjI1d2vQWOLJ3lHogvqTsJYvl4ofXRXgMFQzJ7kmlZvlt5i8x5S5VwgZu0ghru4HkLqOoFfU2JQ==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 1.6.0
+      preact: 10.19.5
     dev: true
 
   /@sindresorhus/merge-streams@2.3.0:
