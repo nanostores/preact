@@ -1,13 +1,13 @@
-import type { FunctionalComponent as FC } from 'preact'
-
 import './setup.js'
-import { STORE_UNMOUNT_DELAY, onMount, atom, map } from 'nanostores'
-import { render, screen, act } from '@testing-library/preact'
-import { deepStrictEqual, equal } from 'node:assert'
-import { useState } from 'preact/hooks'
+
+import { act, render, screen } from '@testing-library/preact'
 import { delay } from 'nanodelay'
-import { test, afterEach } from 'node:test'
+import { atom, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
+import { deepStrictEqual, equal } from 'node:assert'
+import { afterEach, test } from 'node:test'
+import type { FunctionalComponent as FC } from 'preact'
 import { h } from 'preact'
+import { useState } from 'preact/hooks'
 
 import { useStore } from '../index.js'
 
@@ -223,7 +223,7 @@ test('has keys option', async () => {
 })
 
 test('return correct value for Atom, if store was changed between rendering and useEffect', async () => {
-  let store = atom<'old' | 'new'>('old')
+  let store = atom<'new' | 'old'>('old')
 
   let renderWithMutate = (value: string): string => {
     store.get() !== 'new' && store.set('new')
@@ -242,7 +242,7 @@ test('return correct value for Atom, if store was changed between rendering and 
 })
 
 test('return correct value for MapStore, if store was changed between rendering and useEffect', async () => {
-  let store = map<{ value: 'old' | 'new' }>({ value: 'old' })
+  let store = map<{ value: 'new' | 'old' }>({ value: 'old' })
 
   let renderWithMutate = (value: string): string => {
     store.get().value !== 'new' && store.setKey('value', 'new')
