@@ -1,6 +1,9 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5.2
+* Added Nano Stores 0.11 support.
+
 ## 0.5.1
 * Added Nano Stores 0.10 support.
 
