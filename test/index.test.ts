@@ -9,7 +9,7 @@ import type { FunctionalComponent as FC } from 'preact'
 import { h } from 'preact'
 import { useState } from 'preact/hooks'
 
-import { useStore } from '../src/index.js'
+import { useStore } from '../index.js'
 
 afterEach(() => {
   window.document.head.innerHTML = ''

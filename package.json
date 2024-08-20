@@ -20,13 +20,13 @@
   "repository": "nanostores/preact",
   "sideEffects": false,
   "type": "module",
-  "types": "./src/index.d.ts",
+  "types": "./index.d.ts",
   "exports": {
-    ".": "./src/index.js",
+    ".": "./index.js",
     "./package.json": "./package.json",
     "./signals": {
-      "import": "./src/signals/index.js",
-      "types": "./src/signals/index.d.ts"
+      "import": "./signals/index.js",
+      "types": "./signals/index.d.ts"
     }
   },
   "engines": {
