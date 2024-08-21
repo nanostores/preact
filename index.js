@@ -1,35 +1,39 @@
+import { useComputed, useSignal } from '@preact/signals'
 import { listenKeys } from 'nanostores'
-import { useEffect, useState } from 'preact/hooks'
+import { useSyncExternalStore } from 'preact/compat'
+import { useCallback, useEffect } from 'preact/hooks'
 
-export function useStore(store, opts = {}) {
-  let [, forceRender] = useState({})
-  let [valueBeforeEffect] = useState(store.get())
+function defineStore(store, options = {}, syncExternalStoreFn) {
+  let subscribe = useCallback(
+    onChange => {
+      return options.keys
+        ? listenKeys(store, options.keys, onChange)
+        : store.listen(onChange)
+    },
+    [options.keys, store]
+  )
+
+  let get = useCallback(() => {
+    return (options.selector ?? (s => s))(store.get())
+  }, [options.selector, store])
+
+  return syncExternalStoreFn(subscribe, get)
+}
+
+function useSignalLikeSyncExternalStore(subscribe, getSnapshot) {
+  let cache = useSignal(getSnapshot())
 
   useEffect(() => {
-    valueBeforeEffect !== store.get() && forceRender({})
-  }, [])
-  
-  useEffect(() => {
-    let batching, timer, unlisten
-    let rerender = () => {
-      if (!batching) {
-        batching = 1
-        timer = setTimeout(() => {
-          batching = undefined
-          forceRender({})
-        })
-      }
-    }
-    if (opts.keys) {
-      unlisten = listenKeys(store, opts.keys, rerender)
-    } else {
-      unlisten = store.listen(rerender)
-    }
-    return () => {
-      unlisten()
-      clearTimeout(timer)
-    }
-  }, [store, '' + opts.keys])
+    return subscribe(() => (cache.value = getSnapshot()))
+  }, [cache, subscribe, getSnapshot])
 
-  return store.get()
+  return useComputed(() => cache.value)
+}
+
+export function useStore(store, options = {}) {
+  return defineStore(store, options, useSignalLikeSyncExternalStore)
+}
+
+export function useLegacyStore(store, options = {}) {
+  return defineStore(store, options, useSyncExternalStore)
 }

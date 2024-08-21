@@ -9,7 +9,7 @@ import type { FunctionalComponent as FC } from 'preact'
 import { h } from 'preact'
 import { useState } from 'preact/hooks'
 
-import { useStore } from '../index.js'
+import { useLegacyStore } from '../index.js'
 
 afterEach(() => {
   window.document.head.innerHTML = ''
@@ -32,13 +32,13 @@ test('renders simple store', async () => {
 
   let Test1: FC = () => {
     renders += 1
-    let value = useStore(letter)
+    let value = useLegacyStore(letter)
     // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test1' }, value)
   }
 
   let Test2: FC = () => {
-    let value = useStore(letter)
+    let value = useLegacyStore(letter)
     // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test2' }, value)
   }
@@ -96,13 +96,13 @@ test('does not reload store on component changes', async () => {
   })
 
   let TestA: FC = () => {
-    let simpleValue = useStore(simple)
+    let simpleValue = useLegacyStore(simple)
     // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `1 ${simpleValue}`)
   }
 
   let TestB: FC = () => {
-    let simpleValue = useStore(simple)
+    let simpleValue = useLegacyStore(simple)
     // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `2 ${simpleValue}`)
   }
@@ -166,7 +166,7 @@ test('has keys option', async () => {
   let MapTest: FC = () => {
     renderCount++
     let [keys, setKeys] = useState<(keyof MapStore)[]>(['a'])
-    let { a, b } = useStore(mapSore, { keys })
+    let { a, b } = useLegacyStore(mapSore, { keys })
     return h(
       // @ts-expect-error: Preact type issue with data-*
       'div',
@@ -231,7 +231,7 @@ test('return correct value for Atom, if store was changed between rendering and 
   }
 
   let Wrapper: FC = () => {
-    let value = useStore(store)
+    let value = useLegacyStore(store)
     return h('p', {}, renderWithMutate(value))
   }
 
@@ -250,7 +250,7 @@ test('return correct value for MapStore, if store was changed between rendering 
   }
 
   let Wrapper: FC = () => {
-    let value = useStore(store).value
+    let value = useLegacyStore(store).value
     return h('p', {}, renderWithMutate(value))
   }
 
