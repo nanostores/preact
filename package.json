@@ -23,11 +23,7 @@
   "types": "./index.d.ts",
   "exports": {
     ".": "./index.js",
-    "./package.json": "./package.json",
-    "./signals": {
-      "import": "./signals/index.js",
-      "types": "./signals/index.d.ts"
-    }
+    "./package.json": "./package.json"
   },
   "engines": {
     "node": "^18.0.0 || >=20.0.0"
@@ -91,8 +87,7 @@
   "size-limit": [
     {
       "import": {
-        "src/index.js": "{ useStore }",
-        "src/signals/index.js": "{ useStoreSignal }",
+        "index.js": "{ useStore, useLegacyStore }",
         "nanostores": "{ map, computed }"
       },
       "limit": "999 B"
