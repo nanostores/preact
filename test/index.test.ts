@@ -33,13 +33,11 @@ test('renders simple store', async () => {
   let Test1: FC = () => {
     renders += 1
     let value = useStore(letter)
-    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test1' }, value)
   }
 
   let Test2: FC = () => {
     let value = useStore(letter)
-    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test2' }, value)
   }
 
@@ -97,13 +95,11 @@ test('does not reload store on component changes', async () => {
 
   let TestA: FC = () => {
     let simpleValue = useStore(simple)
-    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `1 ${simpleValue}`)
   }
 
   let TestB: FC = () => {
     let simpleValue = useStore(simple)
-    // @ts-expect-error: Preact type issue with data-*
     return h('div', { 'data-testid': 'test' }, `2 ${simpleValue}`)
   }
 
@@ -168,7 +164,6 @@ test('has keys option', async () => {
     let [keys, setKeys] = useState<(keyof MapStore)[]>(['a'])
     let { a, b } = useStore(mapSore, { keys })
     return h(
-      // @ts-expect-error: Preact type issue with data-*
       'div',
       { 'data-testid': 'map-test' },
       h('button', {
@@ -222,7 +217,7 @@ test('has keys option', async () => {
   equal(renderCount, 4)
 })
 
-test('return correct value for Atom, if store was changed between rendering and useEffect', async () => {
+test('supports atom changes between rendering and useEffect', () => {
   let store = atom<'new' | 'old'>('old')
 
   let renderWithMutate = (value: string): string => {
@@ -241,7 +236,7 @@ test('return correct value for Atom, if store was changed between rendering and 
   equal(result, 'new')
 })
 
-test('return correct value for MapStore, if store was changed between rendering and useEffect', async () => {
+test('supports map changes between rendering and useEffect', () => {
   let store = map<{ value: 'new' | 'old' }>({ value: 'old' })
 
   let renderWithMutate = (value: string): string => {
