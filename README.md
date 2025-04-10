@@ -17,11 +17,11 @@ with many atomic tree-shakable stores.
 ```tsx
 import { useStore } from '@nanostores/preact'
 
-import { profile } from '../stores/profile.js'
+import { $profile } from '../stores/profile.js'
 
 export const Header = () => {
-  const { userId } = useStore(profile)
-  return <header>{currentUser.name}</header>
+  const profile = useStore($profile)
+  return <header>{profile.name}</header>
 }
 ```
 
