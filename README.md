@@ -25,6 +25,31 @@ export const Header = () => {
 }
 ```
 
+Use the `keys` option to re-render only on specific key changes:
+
+```tsx
+export const Header = () => {
+  const profile = useStore($profile, { keys: 'name' })
+  return <header>{profile.name}</header>
+}
+```
+
+Use the `initial` option to avoid hydration errors on Server Side Rendered (SSR) pages that can get out of sync with the client-side store value:
+
+```tsx
+import { map } from '@nanostores'
+import { useStore } from '@nanostores/preact'
+
+const INITIAL_PROFILE = { name: 'anonymous' }
+
+const $profile = map(INITIAL_PROFILE)
+
+export const Header = () => {
+  const profile = useStore($profile, { initial: INITIAL_PROFILE })
+  return <header>{profile.name}</header>
+}
+```
+
 [Nano Stores]: https://github.com/nanostores/nanostores/
 
 ---
