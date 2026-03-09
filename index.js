@@ -2,13 +2,15 @@ import { listenKeys } from 'nanostores'
 import { useEffect, useState } from 'preact/hooks'
 
 export function useStore(store, opts = {}) {
+  let [hydrated, setHydrated] = useState(false)
   let [, forceRender] = useState({})
   let [valueBeforeEffect] = useState(store.get())
 
   useEffect(() => {
+    'initial' in opts && setHydrated(true)
     valueBeforeEffect !== store.get() && forceRender({})
   }, [])
-  
+
   useEffect(() => {
     let batching, timer, unlisten
     let rerender = () => {
@@ -31,5 +33,5 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  return store.get()
+  return !hydrated && 'initial' in opts ? opts.initial : store.get()
 }

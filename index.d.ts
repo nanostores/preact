@@ -6,6 +6,10 @@ type StoreKeys<T> = T extends { setKey: (k: infer K, v: any) => unknown }
 
 export interface UseStoreOptions<SomeStore> {
   /**
+   * Value to return before hydration, to avoid hydration errors with SSR.
+   */
+  initial?: StoreValue<SomeStore>
+  /**
    * Will re-render components only on specific key changes.
    */
   keys?: StoreKeys<SomeStore>[]
