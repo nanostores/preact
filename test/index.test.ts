@@ -254,3 +254,50 @@ test('supports map changes between rendering and useEffect', () => {
   let result = screen.getByText('new').textContent
   equal(result, 'new')
 })
+
+test('returns initial value until hydrated, per completed useEffect', () => {
+  type Value = 'new' | 'old'
+  let atomStore = atom<Value>('old')
+  let mapStore = map<{ value: Value }>({ value: 'old' })
+
+  atomStore.set('new')
+  mapStore.set({ value: 'new' })
+
+  let atomValues: Value[] = [] // Track values used across renders
+
+  let AtomTest: FC = () => {
+    let value = useStore(atomStore, { initial: 'old' })
+    atomValues.push(value)
+    return h('div', { 'data-testid': 'atom-test' }, value)
+  }
+
+  let mapValues: Value[] = [] // Track values used across renders
+
+  let MapTest: FC = () => {
+    let value = useStore(mapStore, { initial: { value: 'old' } }).value
+    mapValues.push(value)
+    return h('div', { 'data-testid': 'map-test' }, value)
+  }
+
+  let Wrapper: FC = () => {
+    return h(
+      'div',
+      { 'data-testid': 'test' },
+      h(AtomTest, null),
+      h(MapTest, null)
+    )
+  }
+
+  render(h(Wrapper, null))
+
+  // Confirm initial render got old values, and subsequent post-hydration
+  // render got new values
+  deepStrictEqual(atomValues, ['old', 'new'])
+  deepStrictEqual(mapValues, ['old', 'new'])
+
+  // Confirm final rendered version has new values
+  let atomResult = screen.getByTestId('atom-test').textContent
+  equal(atomResult, 'new')
+  let mapResult = screen.getByTestId('map-test').textContent
+  equal(mapResult, 'new')
+})
