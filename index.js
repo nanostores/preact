@@ -7,7 +7,7 @@ export function useStore(store, opts = {}) {
   let [valueBeforeEffect] = useState(store.get())
 
   useEffect(() => {
-    'initial' in opts && setHydrated(true)
+    setHydrated(true)
     valueBeforeEffect !== store.get() && forceRender({})
   }, [])
 
@@ -33,5 +33,6 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  return !hydrated && 'initial' in opts ? opts.initial : store.get()
+  // `'init' in store` check for compatibility with nanostores <= 1.1.1
+  return !hydrated && 'init' in store ? store.init : store.get()
 }
