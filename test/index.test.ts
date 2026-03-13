@@ -6,7 +6,8 @@ import { atom, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
 import { deepStrictEqual, equal } from 'node:assert'
 import { afterEach, test } from 'node:test'
 import type { FunctionalComponent as FC } from 'preact'
-import { h } from 'preact'
+import { h, hydrate } from 'preact'
+import { renderToString } from 'preact-render-to-string'
 import { useState } from 'preact/hooks'
 
 import { useStore } from '../index.js'
@@ -260,25 +261,18 @@ test('returns initial value until hydrated', () => {
   let atomStore = atom<Value>('old')
   let mapStore = map<{ value: Value }>({ value: 'old' })
 
-  atomStore.set('new')
-  mapStore.set({ value: 'new' })
-
   let atomValues: Value[] = [] // Track values used across renders
-  let atomRenders = 0
 
   let AtomTest: FC = () => {
     let value = useStore(atomStore)
-    atomRenders += 1
     atomValues.push(value)
     return h('div', { 'data-testid': 'atom-test' }, value)
   }
 
   let mapValues: Value[] = [] // Track values used across renders
-  let mapRenders = 0
 
   let MapTest: FC = () => {
     let value = useStore(mapStore).value
-    mapRenders += 1
     mapValues.push(value)
     return h('div', { 'data-testid': 'map-test' }, value)
   }
@@ -292,20 +286,29 @@ test('returns initial value until hydrated', () => {
     )
   }
 
-  render(h(Wrapper, null))
+  // Create a "server" rendered element to re-hydrate
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+  let html = renderToString(h(Wrapper, null))
+  ssrElement.innerHTML = html
 
-  // Confirm components were each rendered twice
-  equal(atomRenders, 2)
-  equal(mapRenders, 2)
+  equal(screen.getByTestId('atom-test').textContent, 'old')
+  equal(screen.getByTestId('map-test').textContent, 'old')
 
-  // Confirm initial render got old values, and subsequent post-hydration
-  // render got new values
-  deepStrictEqual(atomValues, ['old', 'new'])
-  deepStrictEqual(mapValues, ['old', 'new'])
+  // Simulate store state change on client-side, after "server" render
+  atomStore.set('new')
+  mapStore.set({ value: 'new' })
 
-  // Confirm final rendered version has new values
-  let atomResult = screen.getByTestId('atom-test').textContent
-  equal(atomResult, 'new')
-  let mapResult = screen.getByTestId('map-test').textContent
-  equal(mapResult, 'new')
+  // Hydrate into SSR element
+  act(() => {
+    hydrate(h(Wrapper, null), ssrElement)
+  })
+
+  // Confirm "server" render got old values, initial client render got old
+  // values at hydration, then post-hydration render got new values
+  deepStrictEqual(atomValues, ['old', 'old', 'new'])
+  deepStrictEqual(mapValues, ['old', 'old', 'new'])
+
+  equal(screen.getByTestId('atom-test').textContent, 'new')
+  equal(screen.getByTestId('map-test').textContent, 'new')
 })
