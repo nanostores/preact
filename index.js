@@ -32,6 +32,5 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  // `'init' in store` check for compatibility with nanostores <= 1.1.1
-  return !hydrated && 'init' in store ? store.init : store.get()
+  return !hydrated ? store.init : store.get()
 }
