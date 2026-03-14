@@ -6,7 +6,8 @@ import { atom, map, onMount, STORE_UNMOUNT_DELAY } from 'nanostores'
 import { deepStrictEqual, equal } from 'node:assert'
 import { afterEach, test } from 'node:test'
 import type { FunctionalComponent as FC } from 'preact'
-import { h } from 'preact'
+import { h, hydrate } from 'preact'
+import { renderToString } from 'preact-render-to-string'
 import { useState } from 'preact/hooks'
 
 import { useStore } from '../index.js'
@@ -60,7 +61,7 @@ test('renders simple store', async () => {
   deepStrictEqual(events, ['constructor'])
   equal(screen.getByTestId('test1').textContent, 'a')
   equal(screen.getByTestId('test2').textContent, 'a')
-  equal(renders, 1)
+  equal(renders, 2)
 
   await act(async () => {
     letter.set('b')
@@ -70,13 +71,13 @@ test('renders simple store', async () => {
 
   equal(screen.getByTestId('test1').textContent, 'c')
   equal(screen.getByTestId('test2').textContent, 'c')
-  equal(renders, 2)
+  equal(renders, 3)
 
   act(() => {
     screen.getByRole('button').click()
   })
   equal(screen.queryByTestId('test'), null)
-  equal(renders, 2)
+  equal(renders, 3)
   await delay(STORE_UNMOUNT_DELAY)
 
   deepStrictEqual(events, ['constructor', 'destroy'])
@@ -178,7 +179,7 @@ test('has keys option', async () => {
   render(h(Wrapper, {}, h(MapTest, {})))
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 1)
+  equal(renderCount, 2)
 
   // updates on init
   await act(async () => {
@@ -187,7 +188,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 2)
+  equal(renderCount, 3)
 
   // updates when has key
   await act(async () => {
@@ -196,7 +197,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 3)
+  equal(renderCount, 4)
 
   // does not update when has no key
   await act(async () => {
@@ -205,7 +206,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 3)
+  equal(renderCount, 4)
 
   // reacts on parameter changes
   await act(async () => {
@@ -214,7 +215,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-b')
-  equal(renderCount, 4)
+  equal(renderCount, 5)
 })
 
 test('supports atom changes between rendering and useEffect', () => {
@@ -253,4 +254,61 @@ test('supports map changes between rendering and useEffect', () => {
 
   let result = screen.getByText('new').textContent
   equal(result, 'new')
+})
+
+test('returns initial value until hydrated', () => {
+  type Value = 'new' | 'old'
+  let atomStore = atom<Value>('old')
+  let mapStore = map<{ value: Value }>({ value: 'old' })
+
+  let atomValues: Value[] = [] // Track values used across renders
+
+  let AtomTest: FC = () => {
+    let value = useStore(atomStore)
+    atomValues.push(value)
+    return h('div', { 'data-testid': 'atom-test' }, value)
+  }
+
+  let mapValues: Value[] = [] // Track values used across renders
+
+  let MapTest: FC = () => {
+    let value = useStore(mapStore).value
+    mapValues.push(value)
+    return h('div', { 'data-testid': 'map-test' }, value)
+  }
+
+  let Wrapper: FC = () => {
+    return h(
+      'div',
+      { 'data-testid': 'test' },
+      h(AtomTest, null),
+      h(MapTest, null)
+    )
+  }
+
+  // Create a "server" rendered element to re-hydrate
+  let ssrElement = document.createElement('div')
+  document.body.appendChild(ssrElement)
+  let html = renderToString(h(Wrapper, null))
+  ssrElement.innerHTML = html
+
+  equal(screen.getByTestId('atom-test').textContent, 'old')
+  equal(screen.getByTestId('map-test').textContent, 'old')
+
+  // Simulate store state change on client-side, after "server" render
+  atomStore.set('new')
+  mapStore.set({ value: 'new' })
+
+  // Hydrate into SSR element
+  act(() => {
+    hydrate(h(Wrapper, null), ssrElement)
+  })
+
+  // Confirm "server" render got old values, initial client render got old
+  // values at hydration, then post-hydration render got new values
+  deepStrictEqual(atomValues, ['old', 'old', 'new'])
+  deepStrictEqual(mapValues, ['old', 'old', 'new'])
+
+  equal(screen.getByTestId('atom-test').textContent, 'new')
+  equal(screen.getByTestId('map-test').textContent, 'new')
 })

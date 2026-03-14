@@ -2,13 +2,14 @@ import { listenKeys } from 'nanostores'
 import { useEffect, useState } from 'preact/hooks'
 
 export function useStore(store, opts = {}) {
+  let [hydrated, setHydrated] = useState(false)
   let [, forceRender] = useState({})
-  let [valueBeforeEffect] = useState(store.get())
 
+  // A re-render is always forced on mount and hydrate
   useEffect(() => {
-    valueBeforeEffect !== store.get() && forceRender({})
+    setHydrated(true)
   }, [])
-  
+
   useEffect(() => {
     let batching, timer, unlisten
     let rerender = () => {
@@ -31,5 +32,6 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  return store.get()
+  // `'init' in store` check for compatibility with nanostores <= 1.1.1
+  return !hydrated && 'init' in store ? store.init : store.get()
 }

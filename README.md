@@ -25,6 +25,15 @@ export const Header = () => {
 }
 ```
 
+Use the `keys` option to re-render only on specific key changes:
+
+```tsx
+export const Header = () => {
+  const profile = useStore($profile, { keys: 'name' })
+  return <header>{profile.name}</header>
+}
+```
+
 [Nano Stores]: https://github.com/nanostores/nanostores/
 
 ---

@@ -59,6 +59,9 @@ importers:
       preact:
         specifier: ^10.26.5
         version: 10.26.5
+      preact-render-to-string:
+        specifier: ^6.6.6
+        version: 6.6.6(preact@10.26.5)
       size-limit:
         specifier: ^11.2.0
         version: 11.2.0
@@ -1372,6 +1375,11 @@ packages:
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
+
+  preact-render-to-string@6.6.6:
+    resolution: {integrity: sha512-EfqZJytnjJldV+YaaqhthU2oXsEf5e+6rDv957p+zxAvNfFLQOPfvBOTncscQ+akzu6Wrl7s3Pa0LjUQmWJsGQ==}
+    peerDependencies:
+      preact: '>=10 || >= 11.0.0-0'
 
   preact@10.26.5:
     resolution: {integrity: sha512-fmpDkgfGU6JYux9teDWLhj9mKN55tyepwYbxHgQuIxbWQzgFg5vk7Mrrtfx7xRxq798ynkY4DDDxZr235Kk+4w==}
@@ -2976,6 +2984,10 @@ snapshots:
   picomatch@4.0.2: {}
 
   possible-typed-array-names@1.1.0: {}
+
+  preact-render-to-string@6.6.6(preact@10.26.5):
+    dependencies:
+      preact: 10.26.5
 
   preact@10.26.5: {}
 
