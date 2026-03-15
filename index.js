@@ -4,10 +4,11 @@ import { useEffect, useState } from 'preact/hooks'
 export function useStore(store, opts = {}) {
   let [hydrated, setHydrated] = useState(false)
   let [, forceRender] = useState({})
+  let [valueBeforeEffect] = useState(store.get())
 
-  // A re-render is always forced on mount and hydrate
   useEffect(() => {
     setHydrated(true)
+    valueBeforeEffect !== store.get() && forceRender({})
   }, [])
 
   useEffect(() => {
