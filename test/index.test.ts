@@ -61,7 +61,7 @@ test('renders simple store', async () => {
   deepStrictEqual(events, ['constructor'])
   equal(screen.getByTestId('test1').textContent, 'a')
   equal(screen.getByTestId('test2').textContent, 'a')
-  equal(renders, 2)
+  equal(renders, 1)
 
   await act(async () => {
     letter.set('b')
@@ -71,13 +71,13 @@ test('renders simple store', async () => {
 
   equal(screen.getByTestId('test1').textContent, 'c')
   equal(screen.getByTestId('test2').textContent, 'c')
-  equal(renders, 3)
+  equal(renders, 2)
 
   act(() => {
     screen.getByRole('button').click()
   })
   equal(screen.queryByTestId('test'), null)
-  equal(renders, 3)
+  equal(renders, 2)
   await delay(STORE_UNMOUNT_DELAY)
 
   deepStrictEqual(events, ['constructor', 'destroy'])
@@ -179,7 +179,7 @@ test('has keys option', async () => {
   render(h(Wrapper, {}, h(MapTest, {})))
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 2)
+  equal(renderCount, 1)
 
   // updates on init
   await act(async () => {
@@ -188,7 +188,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 3)
+  equal(renderCount, 2)
 
   // updates when has key
   await act(async () => {
@@ -197,7 +197,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 4)
+  equal(renderCount, 3)
 
   // does not update when has no key
   await act(async () => {
@@ -206,7 +206,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 4)
+  equal(renderCount, 3)
 
   // reacts on parameter changes
   await act(async () => {
@@ -215,7 +215,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-b')
-  equal(renderCount, 5)
+  equal(renderCount, 4)
 })
 
 test('supports atom changes between rendering and useEffect', () => {
@@ -264,7 +264,7 @@ test('returns initial value until hydrated', () => {
   let atomValues: Value[] = [] // Track values used across renders
 
   let AtomTest: FC = () => {
-    let value = useStore(atomStore)
+    let value = useStore(atomStore, { ssr: true })
     atomValues.push(value)
     return h('div', { 'data-testid': 'atom-test' }, value)
   }
@@ -272,7 +272,7 @@ test('returns initial value until hydrated', () => {
   let mapValues: Value[] = [] // Track values used across renders
 
   let MapTest: FC = () => {
-    let value = useStore(mapStore).value
+    let value = useStore(mapStore, { ssr: true }).value
     mapValues.push(value)
     return h('div', { 'data-testid': 'map-test' }, value)
   }

@@ -2,12 +2,15 @@ import { listenKeys } from 'nanostores'
 import { useEffect, useState } from 'preact/hooks'
 
 export function useStore(store, opts = {}) {
-  let [hydrated, setHydrated] = useState(false)
+  let [returnCurrent, setReturnCurrent] = useState(
+    // Always return current value unless SSR mode
+    opts.ssr !== true
+  )
   let [, forceRender] = useState({})
   let [valueBeforeEffect] = useState(store.get())
 
   useEffect(() => {
-    setHydrated(true)
+    setReturnCurrent(true)
     valueBeforeEffect !== store.get() && forceRender({})
   }, [])
 
@@ -33,5 +36,5 @@ export function useStore(store, opts = {}) {
     }
   }, [store, '' + opts.keys])
 
-  return !hydrated ? store.init : store.get()
+  return returnCurrent ? store.get() : store.init
 }

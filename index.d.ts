@@ -9,6 +9,10 @@ export interface UseStoreOptions<SomeStore> {
    * Will re-render components only on specific key changes.
    */
   keys?: StoreKeys<SomeStore>[]
+  /**
+   * Support SSR: return initial value on mount, current value after hydration
+   */
+  ssr?: boolean
 }
 
 /**
