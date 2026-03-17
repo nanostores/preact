@@ -48,7 +48,7 @@ export const Header = () => {
 
 ### SSR
 
-SSR could be very complicated in React. To avoid hydration errors you
+SSR could be very complicated in VDom. To avoid hydration errors you
 need exactly the same stores state in the end of server HTML rendering
 and during the first DOM render on the client.
 
@@ -85,8 +85,3 @@ export const Header = () => {
   return <header>{profile.name}</header>
 }
 ```
-
-A function set on `ssr` works similarly to the `getServerSnapshot` option of
-React's
-[`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore)
-hook, though it works differently internally for Preact.
