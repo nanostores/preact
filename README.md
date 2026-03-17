@@ -58,12 +58,16 @@ by `ssr: 'initial'`:
 ```tsx
 export const Header = () => {
   const profile = useStore($profile, { ssr: 'initial' })
-  // Hydrate with initial profile, then render latest client-side value
+
+  // Server render and client hydration use store's initial value.
+  // After hydration, client re-renders with the current value.
   return <header>{profile.name}</header>
 }
 ```
 
-For advanced cases where you update store values on the server before SSR, and need pages to hydrate with the updated value from the server, set a function that returns the server state: `ssr: () => serverState`.
+For advanced cases where you update store values on the server before SSR, and
+need pages to hydrate with the updated value from the server, set a function
+that returns the server state: `ssr: () => serverState`.
 
 ```tsx
 // Value of store on server at time of SSR, passed to client somehow...
@@ -71,14 +75,13 @@ const profileFromServer = { name: 'A User' }
 
 export const Header = () => {
   const profile = useStore($profile, {
-    ssr:
-      typeof window === 'undefined'
-        ? // On server, always use up-to-date store value (no SSR handling)
-          false
-        : // On client, set server value to avoid error on hydration
-          () => profileFromServer
+    // On server, always use up-to-date store value (set `ssr` to `false`).
+    // On client, set server value to avoid error on hydration.
+    ssr: typeof window === 'object' && (() => profileFromServer)
   })
-  // Hydrate with profile at time of SSR, then render latest client-side value
+
+  // Server render uses store's current value. Client uses value from function
+  // for hydration, then after hydration re-renders with the current value.
   return <header>{profile.name}</header>
 }
 ```
