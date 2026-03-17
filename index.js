@@ -8,8 +8,8 @@ export function useStore(store, { keys, ssr } = {}) {
 
   useEffect(() => {
     // Skip re-render afer hydration when not needed for SSR support
-    ssr && setIsHydrated(true)
-    valueBeforeEffect !== store.get() && forceRender({})
+    if (ssr) setIsHydrated(true)
+    if (valueBeforeEffect !== store.get()) forceRender({})
   }, [])
 
   useEffect(() => {
