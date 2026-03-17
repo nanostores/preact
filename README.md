@@ -25,6 +25,18 @@ export const Header = () => {
 }
 ```
 
+[Nano Stores]: https://github.com/nanostores/nanostores/
+
+---
+
+<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" /> Made at <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-preact&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
+
+---
+
+## Options
+
+### Keys
+
 Use the `keys` option to re-render only on specific key changes:
 
 ```tsx
@@ -34,10 +46,44 @@ export const Header = () => {
 }
 ```
 
-[Nano Stores]: https://github.com/nanostores/nanostores/
+### SSR
 
----
+SSR could be very complicated in React. To avoid hydration errors you
+need exactly the same stores state in the end of server HTML rendering
+and during the first DOM render on the client.
 
-<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" /> Made at <b><a href="https://evilmartians.com/devtools?utm_source=nanostores-preact&utm_campaign=devtools-button&utm_medium=github">Evil Martians</a></b>, product consulting for <b>developer tools</b>.
+For simple solution you can disable any store update on the server
+by `ssr: 'initial'`:
 
----
+```tsx
+export const Header = () => {
+  const profile = useStore($profile, { ssr: 'initial' })
+  // Hydrate with initial profile, then render latest client-side value
+  return <header>{profile.name}</header>
+}
+```
+
+For advanced cases where you update store values on the server before SSR, and need pages to hydrate with the updated value from the server, set a function that returns the server state: `ssr: () => serverState`.
+
+```tsx
+// Value of store on server at time of SSR, passed to client somehow...
+const profileFromServer = { name: 'A User' }
+
+export const Header = () => {
+  const profile = useStore($profile, {
+    ssr:
+      typeof window === 'undefined'
+        ? // On server, always use up-to-date store value (no SSR handling)
+          false
+        : // On client, set server value to avoid error on hydration
+          () => profileFromServer
+  })
+  // Hydrate with profile at time of SSR, then render latest client-side value
+  return <header>{profile.name}</header>
+}
+```
+
+A function set on `ssr` works similarly to the `getServerSnapshot` option of
+React's
+[`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore)
+hook, though it works differently internally for Preact.

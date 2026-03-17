@@ -10,9 +10,11 @@ export interface UseStoreOptions<SomeStore> {
    */
   keys?: StoreKeys<SomeStore>[]
   /**
-   * Support SSR: return initial value on mount, current value after hydration
+   * Enable SSR support. Set `initial` when store's initial value is the same
+   * on server and client, or provide a function to return the server store
+   * state for advanced cases.
    */
-  ssr?: boolean
+  ssr?: 'initial' | (() => StoreValue<SomeStore>) | false
 }
 
 /**

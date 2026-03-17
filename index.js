@@ -1,16 +1,14 @@
 import { listenKeys } from 'nanostores'
 import { useEffect, useState } from 'preact/hooks'
 
-export function useStore(store, opts = {}) {
-  let [returnInitial, setReturnInitial] = useState(
-    // Return initial value on mount for SSR support
-    opts.ssr === true
-  )
+export function useStore(store, { keys, ssr } = {}) {
+  let [isHydrated, setIsHydrated] = useState(false)
   let [, forceRender] = useState({})
   let [valueBeforeEffect] = useState(store.get())
 
   useEffect(() => {
-    setReturnInitial(false)
+    // Skip re-render afer hydration when not needed for SSR support
+    ssr && setIsHydrated(true)
     valueBeforeEffect !== store.get() && forceRender({})
   }, [])
 
@@ -25,8 +23,8 @@ export function useStore(store, opts = {}) {
         })
       }
     }
-    if (opts.keys) {
-      unlisten = listenKeys(store, opts.keys, rerender)
+    if (keys) {
+      unlisten = listenKeys(store, keys, rerender)
     } else {
       unlisten = store.listen(rerender)
     }
@@ -34,7 +32,13 @@ export function useStore(store, opts = {}) {
       unlisten()
       clearTimeout(timer)
     }
-  }, [store, '' + opts.keys])
+  }, [store, '' + keys])
 
-  return returnInitial ? store.init : store.get()
+  // For SSR return initial value or result of function until hydrated: always
+  // on server, until post-hydration on client
+  if (ssr && !isHydrated) {
+    return ssr === 'initial' ? store.init : ssr()
+  }
+
+  return store.get()
 }
