@@ -57,14 +57,6 @@
     "nanostores": "^1.2.0",
     "preact": ">=10.0.0"
   },
-  "prettier": {
-    "arrowParens": "avoid",
-    "jsxSingleQuote": false,
-    "quoteProps": "consistent",
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "none"
-  },
   "size-limit": [
     {
       "import": {
@@ -74,20 +66,6 @@
       "limit": "965 B"
     }
   ],
-  "c8": {
-    "check-coverage": true,
-    "clean": true,
-    "exclude": [
-      "**/*.test.*",
-      "test/*"
-    ],
-    "lines": 100,
-    "reporter": [
-      "text",
-      "lcov"
-    ],
-    "skip-full": true
-  },
   "engines": {
     "node": "^20.0.0 || >=22.0.0"
   }
