@@ -15,14 +15,14 @@ with many atomic tree-shakable stores.
 - It has good **TypeScript** support.
 
 ```tsx
-import { useStore } from '@nanostores/preact'
+import { useStore } from "@nanostores/preact";
 
-import { $profile } from '../stores/profile.js'
+import { $profile } from "../stores/profile.js";
 
 export const Header = () => {
-  const profile = useStore($profile)
-  return <header>{profile.name}</header>
-}
+  const profile = useStore($profile);
+  return <header>{profile.name}</header>;
+};
 ```
 
 [Nano Stores]: https://github.com/nanostores/nanostores/
@@ -41,9 +41,17 @@ Use the `keys` option to re-render only on specific key changes:
 
 ```tsx
 export const Header = () => {
-  const profile = useStore($profile, { keys: 'name' })
-  return <header>{profile.name}</header>
-}
+  const profile = useStore($profile, { keys: "name" });
+  return <header>{profile.name}</header>;
+};
+```
+
+Listening to a base key will automatically trigger a re-render
+if any of its nested properties mutate.
+
+```tsx
+// Will listen for all changes in profile object
+const profile = useStore($profile, { keys: ["profile"] });
 ```
 
 ### SSR
@@ -57,12 +65,12 @@ by `ssr: 'initial'`:
 
 ```tsx
 export const Header = () => {
-  const profile = useStore($profile, { ssr: 'initial' })
+  const profile = useStore($profile, { ssr: "initial" });
 
   // Server render and client hydration use store's initial value.
   // After hydration, client re-renders with the current value.
-  return <header>{profile.name}</header>
-}
+  return <header>{profile.name}</header>;
+};
 ```
 
 For advanced cases where you update store values on the server before SSR, and
@@ -71,17 +79,17 @@ that returns the server state: `ssr: () => serverState`.
 
 ```tsx
 // Value of store on server at time of SSR, passed to client somehow...
-const profileFromServer = { name: 'A User' }
+const profileFromServer = { name: "A User" };
 
 export const Header = () => {
   const profile = useStore($profile, {
     // On server, always use up-to-date store value (set `ssr` to `false`).
     // On client, set server value to avoid error on hydration.
-    ssr: typeof window === 'object' && (() => profileFromServer)
-  })
+    ssr: typeof window === "object" && (() => profileFromServer),
+  });
 
   // Server render uses store's current value. Client uses value from function
   // for hydration, then after hydration re-renders with the current value.
-  return <header>{profile.name}</header>
-}
+  return <header>{profile.name}</header>;
+};
 ```
