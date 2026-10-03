@@ -62,7 +62,7 @@
         "index.js": "{ useStore }",
         "nanostores": "{ map, computed }"
       },
-      "limit": "986 B"
+      "limit": "972 B"
     }
   ],
   "engines": {

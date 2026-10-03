@@ -83,6 +83,26 @@ test('renders simple store', async () => {
   deepStrictEqual(events, ['constructor', 'destroy'])
 })
 
+test('re-renders in a microtask, before any timer', async () => {
+  let letter = atom<string>('a')
+  let renders = 0
+
+  let Test: FC = () => {
+    renders += 1
+    return h('div', { 'data-testid': 'test' }, useStore(letter))
+  }
+
+  render(h(Test, null))
+  await act(async () => {})
+  letter.set('b')
+  letter.set('c')
+  await Promise.resolve()
+  await Promise.resolve()
+
+  equal(screen.getByTestId('test').textContent, 'c')
+  equal(renders, 2)
+})
+
 test('does not reload store on component changes', async () => {
   let destroyed = ''
   let simple = atom<string>('')
