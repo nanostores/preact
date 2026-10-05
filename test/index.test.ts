@@ -201,14 +201,14 @@ test('has keys option', async () => {
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
   equal(renderCount, 1)
 
-  // updates on init
+  // does not update when watched key value is the same
   await act(async () => {
     mapSore.set({ a: undefined, b: undefined })
     await delay(1)
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:undefined-undefined')
-  equal(renderCount, 2)
+  equal(renderCount, 1)
 
   // updates when has key
   await act(async () => {
@@ -217,7 +217,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 3)
+  equal(renderCount, 2)
 
   // does not update when has no key
   await act(async () => {
@@ -226,7 +226,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-undefined')
-  equal(renderCount, 3)
+  equal(renderCount, 2)
 
   // reacts on parameter changes
   await act(async () => {
@@ -235,7 +235,7 @@ test('has keys option', async () => {
   })
 
   equal(screen.getByTestId('map-test').textContent, 'map:a-b')
-  equal(renderCount, 4)
+  equal(renderCount, 3)
 })
 
 test('supports atom changes between rendering and useEffect', () => {
