@@ -13,25 +13,16 @@ export function useStore(store, { keys, ssr } = {}) {
   }, [])
 
   useEffect(() => {
-    let batching, timer, unlisten
-    let rerender = () => {
-      if (!batching) {
-        batching = 1
-        timer = setTimeout(() => {
-          batching = undefined
-          forceRender({})
-        })
-      }
-    }
+    let unlisten
+    // Preact already batches state updates in a microtask. A timer here
+    // would delay the render until after the next frame in browsers.
+    let rerender = () => forceRender({})
     if (keys) {
       unlisten = listenKeys(store, keys, rerender)
     } else {
       unlisten = store.listen(rerender)
     }
-    return () => {
-      unlisten()
-      clearTimeout(timer)
-    }
+    return unlisten
   }, [store, '' + keys])
 
   // For SSR return initial value or result of function until hydrated: always
