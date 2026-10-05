@@ -2,6 +2,10 @@
 
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.1.1
+
+- Fixed render performance (by @Seigiard).
+
 ## 1.1.0
 
 - Added `ssr` option (by @jmurty).
