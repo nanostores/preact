@@ -41,7 +41,7 @@ Use the `keys` option to re-render only on specific key changes:
 
 ```tsx
 export const Header = () => {
-  const profile = useStore($profile, { keys: 'name' })
+  const profile = useStore($profile, { keys: ['name'] })
   return <header>{profile.name}</header>
 }
 ```
